@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import pandas as pd
-import joblib
+import mlflow
 
-# Load the trained best model
-model = joblib.load("models/best_model.pkl")
+mlflow.set_tracking_uri("http://127.0.0.1:5000")
+# Load the registered Random Forest model
+model = mlflow.pyfunc.load_model("models:/WineQualityModel/3")
 
 # Create FastAPI application
 app = FastAPI(
@@ -12,7 +13,6 @@ app = FastAPI(
     description="Predicts wine quality using a trained Random Forest model",
     version="1.0"
 )
-
 
 # Input data format
 class WineData(BaseModel):
@@ -28,14 +28,12 @@ class WineData(BaseModel):
     sulphates: float
     alcohol: float
 
-
 # Home endpoint
 @app.get("/")
 def home():
     return {
         "message": "Wine Quality Prediction API is running"
     }
-
 
 # Prediction endpoint
 @app.post("/predict")
