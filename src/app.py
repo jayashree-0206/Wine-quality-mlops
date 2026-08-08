@@ -3,7 +3,6 @@ from pydantic import BaseModel
 import pandas as pd
 import joblib
 
-
 # Load the trained best model
 model = joblib.load("models/best_model.pkl")
 
